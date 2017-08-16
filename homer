@@ -1,0 +1,213 @@
+#!/usr/bin/env bash
+
+set -e
+
+readonly homer="git --git-dir=$HOME/.homer/ --work-tree=$HOME"
+readonly VERSION=1.0
+
+#$homer st --porcelain
+
+function title {
+	echo
+	echo -e "\e[1mHomer v$VERSION\e[0m"
+	echo -e "\e[37mhttp://github.com/igr/homer\e[0m"
+	echo
+}
+
+function itsDone {
+	echo
+	echo -e "Done with \e[101m ❤ \e[0m :)"
+	echo
+}
+
+function isStatusClean {
+	if [[ -z "`$homer status --porcelain`" ]]; then
+		echo "yes"
+	else
+		echo "no"
+	fi
+}
+
+function findNewFiles {
+	$homer status --porcelain | while read status file; do
+		case $status in
+			A) echo "$file";;
+		esac
+	done
+}
+
+function findModifiedFiles {
+	$homer status --porcelain | while read status file; do
+		case $status in
+			M) echo "$file";;
+		esac
+	done
+}
+
+
+function findDeletedFiles {
+	$homer status --porcelain | while read status file; do
+		case $status in
+			D) echo "$file";;
+		esac
+	done
+}
+
+
+function findTrackedFolders {
+	while read -r t; do
+		if [[ $t != *"/"* ]]; then
+    		echo $t
+		fi
+	done <<< `$homer ls-tree -r master --name-only -d`
+}
+
+function findUntrackedFiles {
+	dirs=`findTrackedFolders`
+
+	while read -r f; do
+		for d in $dirs; do
+			if [[ "$f" == "$d/"* ]]; then
+				echo $f
+			fi
+		done
+	done <<< `$homer ls-files --others -x "*/*/**" --exclude-per-directory=.gitignore`
+}
+
+function addUntrackedFiles {
+	dirs=`findTrackedFolders`
+
+	while read -r f; do
+		for d in $dirs; do
+			if [[ "$f" == "$d/"* ]]; then
+				$homer add $f
+			fi
+		done
+	done <<< `$homer ls-files --others -x "*/*/**" --exclude-per-directory=.gitignore`
+}
+
+
+###
+# Shows the status
+###
+function status {
+	echo
+	echo -e "\e[92mNew\e[0m"
+	findNewFiles
+
+	echo
+	echo -e "\e[93mModified\e[0m"
+	findModifiedFiles
+
+	echo
+	echo -e "\e[91mDeleted\e[0m"
+	findDeletedFiles
+
+	echo
+	echo -e "\e[95mUntracked\e[0m"
+	findUntrackedFiles
+
+	echo
+}
+
+###
+# Adds untracked files.
+###
+function add {
+	if [[ -z "$*" ]]; then
+		echo
+		read -p "Do you want to add all untracked files? [y/N] " response
+		 if [[ $response =~ ^(yes|y|Y) ]]; then
+		 	echo "Adding all untracked files"
+
+    		addUntrackedFiles
+
+    		itsDone
+
+    		exit
+ 		fi
+		exit 1
+	fi
+
+	echo "Adding files"
+	$homer add $*
+
+	itsDone
+}
+
+###
+# Commits and pushes everything.
+###
+function push {
+	echo "Commit and push to remote"
+
+	addUntrackedFiles
+
+	message=$1
+	if [[ -z $message ]]; then
+		message="Some Homer changes!"
+	fi
+
+	$homer commit -am "$message"
+
+	$homer push
+
+	itsDone
+}
+
+###
+# Pull new changes
+###
+function pull {
+	if [[ `isStatusClean` == 'no' ]]; then
+		echo "Homer is not clean! First put your changes."
+		echo
+		exit 2
+	fi
+
+	echo "Pulling new changes"
+
+	$homer pull
+
+	itsDone
+}
+
+################################################################################
+
+cd $HOME
+
+title
+
+readonly cmd="$1"
+
+case $cmd in
+    s|status)
+		shift
+    	status
+    	;;
+    a|add)
+		shift
+		add $*
+    	;;
+    p|put)
+		shift
+		push $*
+		;;
+	g|get)
+		shift
+		pull
+		;;
+    v|version)
+		;;
+    *)
+
+	echo "    s|status             - show status";
+	echo "    a|add [<FILES>]      - add (all) untracked files or a new file"
+	echo "    p|put [<MESSAGE>]    - commit and push all changes to remote"
+	echo "    g|get                - pull changes from remote"
+	echo "    v|VERSION            - display version"
+	echo
+    ;;
+esac
+
+
