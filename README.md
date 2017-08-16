@@ -9,11 +9,14 @@ What makes **Homer** different is:
 + keeps tracking of added files, ignoring everythig else
 + fully track all added folders (!)
 
-In other words, you pick files and folders from your `$HOME`. **Homer** will ignore all other files and folders; however, it will fully synchronize the content of added folders! This difference makes everything super easy.
+In other words, you pick files and folders from your `$HOME` and add it to your **Homer**. Everything else is ignored, which is very convenient when used in `$HOME`. **Homer** treats added files and folders differently:
+
++ files are simply tracked when they are added.
++ folders, hover, are fully synchronized! There is no need to add manually each new file from a folder. **Homer** will do all that. Of course, you can use `.gitignore` in the folders to simply ignore some files. This makes everyday-life much easier!
 
 ## Setup
 
-First, initialize your local repo:
+First, initialize your local repo on master machine:
 
 ~~~ bash
 cd ~
@@ -47,7 +50,7 @@ homer checkout
 ## Usage
 
 Download `homer` from this repo and put it on your `$PATH`. If everything is set,
-you should be able to run it:
+you should be able to run it (be sure to remove the alias):
 
 ~~~ bash
 homer
