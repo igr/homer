@@ -3,9 +3,7 @@
 set -e
 
 readonly homer="git --git-dir=$HOME/.homer/ --work-tree=$HOME"
-readonly VERSION=1.0
-
-#$homer st --porcelain
+readonly VERSION=1.1
 
 function title {
 	echo
@@ -88,7 +86,7 @@ function addUntrackedFiles {
 
 
 ###
-# Shows the status
+# Shows the status.
 ###
 function status {
 	echo
@@ -156,7 +154,7 @@ function push {
 }
 
 ###
-# Pull new changes
+# Pull new changes.
 ###
 function pull {
 	if [[ `isStatusClean` == 'no' ]]; then
@@ -170,6 +168,55 @@ function pull {
 	$homer pull
 
 	itsDone
+}
+
+###
+# Initializes everything.
+###
+function init {
+	if [[ -z $1 ]]; then
+		echo "Github repo not specified. Pass \"user/repo_name\" as an argument."
+		exit 1
+	fi
+
+	read -p "Homer will install now in your home. Proceed? [y/N] " response
+	if [[ $response =~ ^(yes|y|Y) ]]; then
+ 		echo "Homer initalization..."
+
+		mkdir .homer
+		cd .homer
+		git init --bare
+		git config --local status.showUntrackedFiles no
+
+		$homer remote add origin https://github.com/$1.git
+		$homer push -u origin master
+
+		itsDone
+	fi
+}
+
+###
+# Clones the remote repo.
+###
+function clone {
+	if [[ -z $1 ]]; then
+		echo "Github repo not specified. Pass \"user/repo_name\" as an argument."
+		exit 1
+	fi
+
+	read -p "Homer will clone in your home. Proceed? [y/N] " response
+	if [[ $response =~ ^(yes|y|Y) ]]; then
+ 		echo "Homer cloning..."
+
+		echo ".homer" >> .gitignore
+
+		git clone --bare https://github.com/$1.git $HOME/.homer
+		$homer config --local status.showUntrackedFiles no
+		$homer checkout
+
+		itsDone
+	fi
+
 }
 
 ################################################################################
@@ -197,15 +244,25 @@ case $cmd in
 		shift
 		pull
 		;;
+	i|init)
+		shift
+		init $*
+		;;
+	c|clone)
+		shift
+		clone $*
+		;;
     v|version)
 		;;
     *)
 
-	echo "    s|status             - show status";
-	echo "    a|add [<FILES>]      - add (all) untracked files or a new file"
-	echo "    p|put [<MESSAGE>]    - commit and push all changes to remote"
-	echo "    g|get                - pull changes from remote"
-	echo "    v|VERSION            - display version"
+	echo "    s|status               - show status";
+	echo "    a|add [<FILES>]        - add (all) untracked files or a new file"
+	echo "    p|put [<MESSAGE>]      - commit and push all changes to remote"
+	echo "    g|get                  - pull changes from remote"
+	echo "    i|init <GITHUB_REPO>   - install and connect to github (\"user/repo\")"
+	echo "    c|clone <GITHUB_REPO>  - clones the repo from github (\"user/repo\")"
+	echo "    v|VERSION              - display version"
 	echo
     ;;
 esac

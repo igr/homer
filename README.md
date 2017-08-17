@@ -14,64 +14,54 @@ In other words, you pick files and folders from your `$HOME` and add it to your 
 + files are simply tracked when they are added.
 + folders, hover, are fully synchronized! There is no need to add manually each new file from a folder. **Homer** will do all that. Of course, you can use `.gitignore` in the folders to simply ignore some files. This makes everyday-life much easier!
 
-## Setup
+## Installation
 
-First, initialize your local repo on master machine:
-
-~~~ bash
-cd ~
-mkdir .homer
-cd .homer
-git init --bare
-git config --local status.showUntrackedFiles no
-alias homer='git --git-dir=$HOME/.homer/ --work-tree=$HOME'
-~~~
-
-This alias is just temporary, after the setup you will not longer need it.
-
-Connect to Github repo:
-
-~~~ bash
-homer remote add origin https://github.com/<MYNAME>/<MYREPO>.git
-homer push -u origin master
-~~~
-
-If you want to initialize an another machine, run this:
-
-~~~ bash
-cd ~
-echo ".homer" >> .gitignore
-alias homer='git --git-dir=$HOME/.homer/ --work-tree=$HOME'
-git clone --bare https://github.com/<MYNAME>/<MYREPO>.git $HOME/.homer
-homer config --local status.showUntrackedFiles no
-homer checkout
-~~~
+Download `homer` to your `$PATH`. Done!
 
 ## Usage
 
-Download `homer` from this repo and put it on your `$PATH`. If everything is set,
-you should be able to run it (be sure to remove the alias):
+First you need to initialize **Homer** and connect to GitHub by passing `user/repo_name`:
 
 ~~~ bash
-homer
+homer init github-user/homer-repo
 ~~~
 
-### Status
+If you have another machine, just clone **Homer**:
 
-**Homer** status is just a nice, friendly overview of what is new, changed, deleted or untracked.
+~~~ bash
+homer clone github-user/homer-repo
+~~~
 
-### Add
+Anytime you can check the status of what is going on; what is new, changed deleted or untracked:
 
-**Homer** can add all untracked files or specified. This step is not required.
+~~~ bash
+homer status
+~~~
 
-### Put
+Start adding files and folders.
 
-**Homer** detects all the changes, new files etc.; commits everything and pushes to remote repo.
+~~~ bash
+homer add .zsh
+homer add bin
+~~~
 
-### Get
+If you already have some folders added, you can simply add all untracked files with just:
 
-**Homer** checks if status is clean nad fetch all the changes from the remote repo.
+~~~ bash
+homer add
+~~~
 
+Finally, put your changes to the repo:
+
+~~~ bash
+homer put
+~~~
+
+On the another computer, get the changes:
+
+~~~ bash
+homer get
+~~~
 
 ## Use with ❤
 
