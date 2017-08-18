@@ -7,7 +7,7 @@ What makes **Homer** different is:
 
 + works directly in the $HOME
 + keeps tracking of added files, ignoring everythig else
-+ fully track all added folders (!)
++ fully tracks all added folders (!)
 
 In other words, you pick files and folders from your `$HOME` and add it to your **Homer**. Everything else is ignored, which is very convenient when used in `$HOME`. **Homer** treats added files and folders differently:
 
@@ -16,48 +16,49 @@ In other words, you pick files and folders from your `$HOME` and add it to your 
 
 ## Installation
 
-Download `homer` to your `$PATH`. Done!
+Download `homer` to your `$PATH` or current folder. Done!
 
 ## Usage
 
-First you need to initialize **Homer** and connect to GitHub by passing `user/repo_name`:
+First you need to _initialize_ **Homer** and connect to GitHub by passing `user/repo_name`:
 
 ~~~ bash
 homer init github-user/homer-repo
 ~~~
 
-If you have another machine, just clone **Homer**:
+If you have another machine, just _clone_ **Homer** from the GitHub:
 
 ~~~ bash
 homer clone github-user/homer-repo
 ~~~
 
-Anytime you can check the status of what is going on; what is new, changed deleted or untracked:
+Anytime you can check the _status_ of what is going on; what is new, changed deleted or untracked:
 
 ~~~ bash
 homer status
 ~~~
 
-Start adding files and folders.
+Start _adding_ files and folders.
 
 ~~~ bash
 homer add .zsh
 homer add bin
+...
 ~~~
 
-If you already have some folders added, you can simply add all untracked files with just:
+If you already have some folders included in **Home**, you can simply add all untracked files bellonging to included folders with simple:
 
 ~~~ bash
 homer add
 ~~~
 
-Finally, put your changes to the repo:
+Finally, _put_ all your changes to the repo (this command will also add all untracked files from included folders):
 
 ~~~ bash
 homer put
 ~~~
 
-On the another computer, get the changes:
+On the another computer, _get_ the changes:
 
 ~~~ bash
 homer get
