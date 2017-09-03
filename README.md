@@ -35,7 +35,7 @@ If you have another machine, just _clone_ **Homer** from the GitHub:
 homer clone github-user/homer-repo
 ```
 
-### Every-day work :sun:
+### Every-day work :sunny:
 
 Anytime you can check the _status_ of what is going on; what is new, changed deleted or untracked:
 
