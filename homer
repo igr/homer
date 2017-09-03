@@ -3,7 +3,7 @@
 set -e
 
 readonly homer="git --git-dir=$HOME/.homer/ --work-tree=$HOME"
-readonly VERSION=1.1
+readonly VERSION=1.2
 
 function title {
 	echo
@@ -216,7 +216,48 @@ function clone {
 
 		itsDone
 	fi
+}
 
+###
+# Removes files from the repo.
+###
+function remove {
+	if [[ -z "$*" ]]; then
+		echo "File(s) to remove not specified."
+		exit 1
+	fi
+
+	echo "Removing files"
+	$homer rm $*
+
+	itsDone
+}
+
+
+###
+# Resets all or a singe file.
+###
+function reset {
+	if [[ -z "$*" ]]; then
+		echo
+		read -p "Do you want to reset all changes? [y/N] " response
+		 if [[ $response =~ ^(yes|y|Y) ]]; then
+		 	echo "Resetting all changes"
+
+    		$homer reset --hard
+
+    		itsDone
+
+    		exit
+ 		fi
+		exit 1
+	fi
+
+	echo "Resetting specified files"
+
+	$homer checkout -- $*
+
+	itsDone
 }
 
 ################################################################################
@@ -228,7 +269,7 @@ title
 readonly cmd="$1"
 
 case $cmd in
-    s|status)
+    s|st|status)
 		shift
     	status
     	;;
@@ -236,6 +277,10 @@ case $cmd in
 		shift
 		add $*
     	;;
+    r|rm|remove|del|delete)
+		shift
+		remove $*
+		;;
     p|put)
 		shift
 		push $*
@@ -248,21 +293,27 @@ case $cmd in
 		shift
 		init $*
 		;;
+	reset)
+		shift
+		reset $*
+		;;
 	c|clone)
 		shift
 		clone $*
 		;;
-    v|version)
+    v|ver|version)
 		;;
     *)
 
 	echo "    s|status               - show status";
 	echo "    a|add [<FILES>]        - add (all) untracked files or a new file"
+	echo "    r|remove <FILES>       - remove file(e)"
 	echo "    p|put [<MESSAGE>]      - commit and push all changes to remote"
 	echo "    g|get                  - pull changes from remote"
+	echo "    reset [<FILES>]        - reset all changes or reset just a file"
 	echo "    i|init <GITHUB_REPO>   - install and connect to github (\"user/repo\")"
 	echo "    c|clone <GITHUB_REPO>  - clones the repo from github (\"user/repo\")"
-	echo "    v|VERSION              - display version"
+	echo "    v|version              - display version"
 	echo
     ;;
 esac

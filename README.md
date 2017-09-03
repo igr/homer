@@ -1,4 +1,4 @@
-# Homer
+# Homer v.2
 
 Your `$HOME` needs **Homer** :)
 
@@ -22,47 +22,59 @@ Download `homer` to your `$PATH` or current folder. Done!
 
 First you need to _initialize_ **Homer** and connect to GitHub by passing `user/repo_name`:
 
-~~~ bash
+``` bash
 homer init github-user/homer-repo
-~~~
+```
 
 If you have another machine, just _clone_ **Homer** from the GitHub:
 
-~~~ bash
+``` bash
 homer clone github-user/homer-repo
-~~~
+```
 
 Anytime you can check the _status_ of what is going on; what is new, changed deleted or untracked:
 
-~~~ bash
+``` bash
 homer status
-~~~
+```
 
 Start _adding_ files and folders.
 
-~~~ bash
+``` bash
 homer add .zsh
 homer add bin
 ...
-~~~
+```
 
 If you already have some folders included in **Home**, you can simply add all untracked files bellonging to included folders with simple:
 
-~~~ bash
+``` bash
 homer add
-~~~
+```
 
 Finally, _put_ all your changes to the repo (this command will also add all untracked files from included folders):
 
-~~~ bash
+``` bash
 homer put
-~~~
+```
 
 On the another computer, _get_ the changes:
 
-~~~ bash
+``` bash
 homer get
-~~~
+```
+
+To reset some file:
+
+``` bash
+homer reset bin/text.txt
+```
+
+To remove some file from the repo:
+
+``` bash
+homer remove <FILE>
+```
 
 ## Use with ❤
 
