@@ -13,6 +13,7 @@ In other words, you pick files and folders from your `$HOME` and add it to your 
 
 + files are simply tracked when they are added.
 + folders, hover, are fully synchronized! There is no need to add manually each new file from a folder. **Homer** will do all that. Of course, you can use `.gitignore` in the folders to simply ignore some files. This makes everyday-life much easier!
++ there is no staging area (like in git). **Homer** hides this from user.
 
 ## Installation :gift:
 
@@ -34,7 +35,7 @@ If you have another machine, just _clone_ **Homer** from the GitHub:
 homer clone github-user/homer-repo
 ```
 
-### Every-day work :tophat:
+### Every-day work :sun:
 
 Anytime you can check the _status_ of what is going on; what is new, changed deleted or untracked:
 
@@ -56,6 +57,9 @@ If you already have some folders included in **Home**, you can simply add all un
 ```shell
 homer add
 ```
+
+You only need to add _new_ files. This is different from `git`: **Homer** does not
+have staging area, so you just need to add new files.
 
 Finally, _put_ all your changes to the repo (this command will also add all untracked files from included folders):
 
