@@ -253,7 +253,7 @@ function reset {
 		exit 1
 	fi
 
-	echo "Resetting specified files"
+	echo "Resetting files"
 
 	$homer checkout -- $*
 
@@ -305,15 +305,15 @@ case $cmd in
 		;;
     *)
 
-	echo "    s|status               - show status";
+	echo "    s|st|status            - show status";
 	echo "    a|add [<FILES>]        - add (all) untracked files or a new file"
-	echo "    r|remove <FILES>       - remove file(e)"
+	echo "    r|rm|remove <FILES>    - remove file(e)"
 	echo "    p|put [<MESSAGE>]      - commit and push all changes to remote"
 	echo "    g|get                  - pull changes from remote"
 	echo "    reset [<FILES>]        - reset all changes or reset just a file"
 	echo "    i|init <GITHUB_REPO>   - install and connect to github (\"user/repo\")"
-	echo "    c|clone <GITHUB_REPO>  - clones the repo from github (\"user/repo\")"
-	echo "    v|version              - display version"
+	echo "    c|clone <GITHUB_REPO>  - clone the repo from github (\"user/repo\")"
+	echo "    v|ver|version          - display version"
 	echo
     ;;
 esac

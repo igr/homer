@@ -1,4 +1,4 @@
-# Homer v.2
+# Homer v1.2
 
 Your `$HOME` needs **Homer** :)
 
@@ -14,33 +14,38 @@ In other words, you pick files and folders from your `$HOME` and add it to your 
 + files are simply tracked when they are added.
 + folders, hover, are fully synchronized! There is no need to add manually each new file from a folder. **Homer** will do all that. Of course, you can use `.gitignore` in the folders to simply ignore some files. This makes everyday-life much easier!
 
-## Installation
+## Installation :gift:
 
 Download `homer` to your `$PATH` or current folder. Done!
 
 ## Usage
 
+### Setup :clapper:
+
 First you need to _initialize_ **Homer** and connect to GitHub by passing `user/repo_name`:
 
-``` bash
+```shell
 homer init github-user/homer-repo
 ```
 
 If you have another machine, just _clone_ **Homer** from the GitHub:
 
-``` bash
+```shell
 homer clone github-user/homer-repo
 ```
 
+### Every-day work :tophat:
+
 Anytime you can check the _status_ of what is going on; what is new, changed deleted or untracked:
 
-``` bash
+```shell
 homer status
 ```
 
-Start _adding_ files and folders.
+Start _adding_ files and folders. When folder is added, all its files are added as well!
+Use `.gitgnore` to ignore files.
 
-``` bash
+```shell
 homer add .zsh
 homer add bin
 ...
@@ -48,31 +53,39 @@ homer add bin
 
 If you already have some folders included in **Home**, you can simply add all untracked files bellonging to included folders with simple:
 
-``` bash
+```shell
 homer add
 ```
 
 Finally, _put_ all your changes to the repo (this command will also add all untracked files from included folders):
 
-``` bash
+```shell
 homer put
 ```
 
 On the another computer, _get_ the changes:
 
-``` bash
+```shell
 homer get
 ```
 
+### Reset and Remove :warning:
+
 To reset some file:
 
-``` bash
+```shell
 homer reset bin/text.txt
 ```
 
-To remove some file from the repo:
+You can reset all changes with:
 
-``` bash
+```shell
+homer reset
+```
+
+To remove single file from the repo:
+
+```shell
 homer remove <FILE>
 ```
 
