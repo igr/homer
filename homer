@@ -2,19 +2,43 @@
 
 set -e
 
+command -v git >/dev/null 2>&1 || { echo "Homer requires \"git\", but it's not installed. Aborting." >&2; exit 1; }
+
 readonly homer="git --git-dir=$HOME/.homer/ --work-tree=$HOME"
-readonly VERSION=1.2
+readonly VERSION=1.3
+
+
+## colors
+# check if stdout is a terminal
+if test -t 1; then
+
+    # see if it supports colors
+    ncolors=$(tput colors)
+
+    if test -n "$ncolors" && test $ncolors -ge 8; then
+        bold="$(tput bold)"
+        nc="$(tput sgr0)"
+
+        gray="$(tput setaf 247)"
+        red_heart="$(tput bold)$(tput setaf 15)$(tput setab 1)"
+        red="$(tput setaf 9)"
+        green="$(tput setaf 10)"
+        yellow="$(tput setaf 11)"
+        purple="$(tput setaf 13)"
+    fi
+fi
+
 
 function title {
 	echo
-	echo -e "\e[1mHomer v$VERSION\e[0m"
-	echo -e "\e[37mhttp://github.com/igr/homer\e[0m"
+	echo "${bold}Homer v${VERSION}${nc}"
+	echo "${gray}http://github.com/igr/homer${nc}"
 	echo
 }
 
 function itsDone {
 	echo
-	echo -e "Done with \e[101m ❤ \e[0m :)"
+	echo "Done with ${red_heart} ❤ ${nc}."
 	echo
 }
 
@@ -90,19 +114,19 @@ function addUntrackedFiles {
 ###
 function status {
 	echo
-	echo -e "\e[92mNew\e[0m"
+	echo "${green}New${nc}"
 	findNewFiles
 
 	echo
-	echo -e "\e[93mModified\e[0m"
+	echo "${yellow}Modified${nc}"
 	findModifiedFiles
 
 	echo
-	echo -e "\e[91mDeleted\e[0m"
+	echo "${red}Deleted${nc}"
 	findDeletedFiles
 
 	echo
-	echo -e "\e[95mUntracked\e[0m"
+	echo -e "${purple}Untracked${nc}"
 	findUntrackedFiles
 
 	echo
@@ -260,6 +284,33 @@ function reset {
 	itsDone
 }
 
+###
+# Check if there is a new version of Homer availiable.
+# If there is, download it.
+###
+function update {
+
+	command -v jq >/dev/null 2>&1 || { echo "Homer requires \"jq\", but it's not installed. Aborting." >&2; exit 1; }
+	command -v curl >/dev/null 2>&1 || { echo "Homer requires \"curl\", but it's not installed. Aborting." >&2; exit 1; }
+
+	github_url='https://api.github.com/repos/igr/homer'
+	up_version=`curl -s ${github_url}/releases/latest | jq --raw-output '.tag_name'`
+
+	if [[ $up_version != "v$VERSION" ]]; then
+		echo "New version availiable: $up_version"
+		echo "Downloading ~/homer_${up_version}"
+
+		download_url=`curl -s ${github_url}/releases/latest | jq -r ".assets[] | .browser_download_url"`
+		curl  -s -o homer_${up_version} $download_url
+		chmod +x homer_${up_version}
+
+		itsDone
+	else
+		echo "You are already using the latest version of Homer. Enjoy!"
+	fi
+
+}
+
 ################################################################################
 
 cd $HOME
@@ -301,6 +352,9 @@ case $cmd in
 		shift
 		clone $*
 		;;
+	u|up|update)
+		update
+		;;
     v|ver|version)
 		;;
     *)
@@ -314,8 +368,7 @@ case $cmd in
 	echo "    i|init <GITHUB_REPO>   - install and connect to github (\"user/repo\")"
 	echo "    c|clone <GITHUB_REPO>  - clone the repo from github (\"user/repo\")"
 	echo "    v|ver|version          - display version"
+	echo "    u|up|update            - download the new version to current folder"
 	echo
     ;;
 esac
-
-

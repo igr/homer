@@ -1,19 +1,21 @@
-# Homer v1.2
+# Homer
 
 Your `$HOME` needs **Homer** :)
 
 **Homer** manages your dotfiles and folders using just `git`. No symlink is involved!
 What makes **Homer** different is:
 
-+ works directly in the $HOME
++ works directly in the `$HOME`
 + keeps tracking of added files, ignoring everythig else
-+ fully tracks all added folders (!)
++ _fully_ tracks all added folders (!)
++ there is no staging area (like in `git`). **Homer** hides this from user.
 
-In other words, you pick files and folders from your `$HOME` and add it to your **Homer**. Everything else is ignored, which is very convenient when used in `$HOME`. **Homer** treats added files and folders differently:
+In other words, you pick files and folders from your `$HOME` and add it to the **Homer**. Everything else is ignored, which is very convenient when used in `$HOME`. **Homer** treats added files and folders differently:
 
-+ files are simply tracked when they are added.
-+ folders, hover, are fully synchronized! There is no need to add manually each new file from a folder. **Homer** will do all that. Of course, you can use `.gitignore` in the folders to simply ignore some files. This makes everyday-life much easier!
-+ there is no staging area (like in git). **Homer** hides this from user.
++ _files_ are simply tracked when they are added.
++ _folders_, however, are fully synchronized! There is no need to manually add file(s) from added folder. **Homer** will do all that. Of course, you can use `.gitignore` in the folders to simply ignore some files.
+
+This makes everyday-life much easier!
 
 ## Installation :gift:
 
@@ -52,7 +54,7 @@ homer add bin
 ...
 ```
 
-If you already have some folders included in **Home**, you can simply add all untracked files bellonging to included folders with simple:
+If you already have some folders included in **Homer**, you can simply add all untracked files bellonging to included folders with simple:
 
 ```shell
 homer add
@@ -92,6 +94,16 @@ To remove single file from the repo:
 ```shell
 homer remove <FILE>
 ```
+
+### Update :rocket:
+
+**Homer** can check for and download the update, if it exists:
+
+```shell
+homer update
+```
+
+This will download a new version of `homer` in your $HOME folder.
 
 ## Use with ❤
 
