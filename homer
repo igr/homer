@@ -126,7 +126,7 @@ function status {
 	findDeletedFiles
 
 	echo
-	echo -e "${purple}Untracked${nc}"
+	echo "${purple}Untracked${nc}"
 	findUntrackedFiles
 
 	echo
