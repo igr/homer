@@ -5,7 +5,7 @@ set -e
 command -v git >/dev/null 2>&1 || { echo "Homer requires \"git\", but it's not installed. Aborting." >&2; exit 1; }
 
 readonly homer="git --git-dir=$HOME/.homer/ --work-tree=$HOME"
-readonly VERSION=1.3
+readonly VERSION=1.3.1
 
 
 ## colors
@@ -23,6 +23,7 @@ if test -t 1; then
         red_heart="$(tput bold)$(tput setaf 15)$(tput setab 1)"
         red="$(tput setaf 9)"
         green="$(tput setaf 10)"
+        blue="$(tput setaf 12)"
         yellow="$(tput setaf 11)"
         purple="$(tput setaf 13)"
     fi
@@ -108,6 +109,16 @@ function addUntrackedFiles {
 	done <<< `$homer ls-files --others -x "*/*/**" --exclude-per-directory=.gitignore`
 }
 
+function findOriginChanges {
+	$homer fetch origin &> /dev/null
+	readonly fetch_head=`cat $HOME/.homer/FETCH_HEAD | cut -f1`
+	readonly local_head=`cat $HOME/.homer/refs/heads/master`
+	if [[ "$fetch_head" != "$local_head" ]]; then
+		echo "Pending updates detected!"
+		echo "Run 'homer get' to update."
+	fi
+}
+
 
 ###
 # Shows the status.
@@ -128,6 +139,10 @@ function status {
 	echo
 	echo "${purple}Untracked${nc}"
 	findUntrackedFiles
+
+	echo
+	echo "${blue}Origin${nc}"
+	findOriginChanges
 
 	echo
 }
