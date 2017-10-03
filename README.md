@@ -45,6 +45,8 @@ Anytime you can check the _status_ of what is going on; what is new, changed del
 homer status
 ```
 
+![](gfx/homer-status.png)
+
 Start _adding_ files and folders. When folder is added, all its files are added as well!
 Use `.gitgnore` to ignore files.
 
