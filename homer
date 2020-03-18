@@ -4,8 +4,9 @@ set -e
 
 command -v git >/dev/null 2>&1 || { echo "Homer requires \"git\", but it's not installed. Aborting." >&2; exit 1; }
 
-readonly homer="git --git-dir=$HOME/.homer/ --work-tree=$HOME"
-readonly VERSION=1.4.0
+readonly HOMER_HOME=$HOME
+readonly homer="git --git-dir=$HOMER_HOME/.homer/ --work-tree=$HOMER_HOME"
+readonly VERSION=1.5.0
 
 
 ## colors
@@ -94,7 +95,7 @@ function findUntrackedFiles {
 				echo $f
 			fi
 		done
-	done <<< `$homer ls-files --others -x "*/*/**" --exclude-per-directory=.gitignore`
+	done <<< `$homer ls-files --others --exclude-per-directory=.gitignore`
 }
 
 function addUntrackedFiles {
@@ -106,19 +107,41 @@ function addUntrackedFiles {
 				$homer add $f
 			fi
 		done
-	done <<< `$homer ls-files --others -x "*/*/**" --exclude-per-directory=.gitignore`
+	done <<< `$homer ls-files --others --exclude-per-directory=.gitignore`
 }
 
 function findOriginChanges {
 	$homer fetch origin &> /dev/null
-	readonly fetch_head=`cat $HOME/.homer/FETCH_HEAD | cut -f1`
-	readonly local_head=`cat $HOME/.homer/refs/heads/master`
+	readonly fetch_head=`cat $HOMER_HOME/.homer/FETCH_HEAD | cut -f1`
+	readonly local_head=`cat $HOMER_HOME/.homer/refs/heads/master`
 	if [[ "$fetch_head" != "$local_head" ]]; then
 		echo "Pending updates detected!"
 		echo "Run 'homer get' to update."
 	fi
 }
 
+
+function gitignore {
+	echo "
+# Homer
+.homer
+
+# Mac common folders
+Applications/
+Desktop/
+Documents/
+Downloads/
+Dropbox/
+Library/
+Movies/
+Music/
+Pictures/
+Public/
+Trash/
+" >> $HOMER_HOME/.gitignore
+
+	echo "Check ${purple}.gitignore${nc} and add more ~/folders to speed up the change scanner."
+}
 
 ###
 # Shows the status.
@@ -218,9 +241,10 @@ function init {
 		exit 1
 	fi
 
-	read -p "Homer will install now in your home. Proceed? [y/N] " response
+	read -p "Homer will ${green}INSTALL${nc} now in your home: ${purple}$HOMER_HOME${nc}. Proceed? [y/N] " response
 	if [[ $response =~ ^(yes|y|Y) ]]; then
  		echo "Homer initalization..."
+ 		echo
 
 		mkdir .homer
 		cd .homer
@@ -228,9 +252,16 @@ function init {
 		git config --local status.showUntrackedFiles no
 
 		$homer remote add origin https://github.com/$1.git
-		$homer push -u origin master
+		$homer pull origin master
+		$homer branch --set-upstream-to=origin/master master
+
+		echo
+		echo "Homer intialized."
+		gitignore
 
 		itsDone
+	else
+		echo "Aborted."
 	fi
 }
 
@@ -243,17 +274,22 @@ function clone {
 		exit 1
 	fi
 
-	read -p "Homer will clone in your home. Proceed? [y/N] " response
+	read -p "Homer repo will be ${yellow}CLONED${nc} to your home: ${purple}$HOMER_HOME${nc}. Proceed? [y/N] " response
 	if [[ $response =~ ^(yes|y|Y) ]]; then
- 		echo "Homer cloning..."
+ 		echo "Homer repo cloning..."
+ 		echo
 
-		echo ".homer" >> .gitignore
-
-		git clone --bare https://github.com/$1.git $HOME/.homer
+		git clone --bare https://github.com/$1.git $HOMER_HOME/.homer
 		$homer config --local status.showUntrackedFiles no
 		$homer checkout
 
+		echo
+		echo "Homer repo cloned."
+		gitignore
+
 		itsDone
+	else
+		echo "Aborted."
 	fi
 }
 
@@ -328,7 +364,7 @@ function update {
 
 ################################################################################
 
-cd $HOME
+cd $HOMER_HOME
 
 title
 
