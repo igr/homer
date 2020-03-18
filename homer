@@ -6,7 +6,7 @@ command -v git >/dev/null 2>&1 || { echo "Homer requires \"git\", but it's not i
 
 readonly HOMER_HOME=$HOME
 readonly homer="git --git-dir=$HOMER_HOME/.homer/ --work-tree=$HOMER_HOME"
-readonly VERSION=1.5.0
+readonly VERSION=1.5.1
 
 
 ## colors
@@ -104,7 +104,7 @@ function addUntrackedFiles {
 	while read -r f; do
 		for d in $dirs; do
 			if [[ "$f" == "$d/"* ]]; then
-				$homer add $f
+				$homer add "$f"
 			fi
 		done
 	done <<< `$homer ls-files --others --exclude-per-directory=.gitignore`
@@ -352,8 +352,10 @@ function update {
 		echo "Downloading ~/homer_${up_version}"
 
 		download_url=`curl -s ${github_url}/releases/latest | jq -r ".assets[] | .browser_download_url"`
-		curl  -s -o homer_${up_version} $download_url
+		curl  -L -s -o homer_${up_version} $download_url
 		chmod +x homer_${up_version}
+		rm homer
+		mv homer_${up_version} homer
 
 		itsDone
 	else
