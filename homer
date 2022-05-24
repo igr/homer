@@ -6,7 +6,7 @@ command -v git >/dev/null 2>&1 || { echo "Homer requires \"git\", but it's not i
 
 readonly HOMER_HOME=$HOME
 readonly homer="git --git-dir=$HOMER_HOME/.homer/ --work-tree=$HOMER_HOME"
-readonly VERSION=1.5.1
+readonly VERSION=1.5.2
 
 
 ## colors
@@ -138,6 +138,7 @@ Music/
 Pictures/
 Public/
 Trash/
+.Trash/
 " >> $HOMER_HOME/.gitignore
 
 	echo "Check ${purple}.gitignore${nc} and add more ~/folders to speed up the change scanner."
