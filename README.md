@@ -1,4 +1,4 @@
-# Homer v1.5.0
+# Homer v1.5.2
 
 Your `$HOME` needs **Homer** :)
 
